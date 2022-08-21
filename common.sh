@@ -5,6 +5,8 @@ set -e
 echo [+ common] install dependencies
 sudo apt-get update
 sudo apt-get install -y \
+    socat \
+    conntrack \
     apt-transport-https \
     gnupg2 \
     curl
