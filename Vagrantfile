@@ -5,7 +5,7 @@
 Vagrant.configure("2") do |config|
   config.vm.box = "bento/ubuntu-20.04"
   config.vm.box_check_update = false
-  config.vm.provision "shell", path: "common.sh"
+  config.vm.provision "shell", path: "ubuntu/common.sh"
 
   config.vm.provider "virtualbox" do |provider|
     provider.memory = 2048
