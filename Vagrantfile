@@ -1,63 +1,38 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
+TOKEN = "92zwly.w6fdrnrg2fut5xko"
+MASTER_IP = "10.0.0.200"
 
 # https://docs.vagrantup.com.
 Vagrant.configure("2") do |config|
   config.vm.box = "bento/ubuntu-20.04"
   config.vm.box_check_update = false
-  config.vm.provision "shell", path: "ubuntu/common.sh"
 
   config.vm.provider "virtualbox" do |provider|
     provider.memory = 2048
     provider.cpus = 2
   end
 
-  # Create a forwarded port mapping which allows access to a specific port
-  # within the machine from a port on the host machine. In the example below,
-  # accessing "localhost:8080" will access port 80 on the guest machine.
-  # NOTE: This will enable public access to the opened port
-  # config.vm.network "forwarded_port", guest: 80, host: 8080
+  config.vm.provision "shell", path: "ubuntu/common.sh"
 
-  # Create a forwarded port mapping which allows access to a specific port
-  # within the machine from a port on the host machine and only allow access
-  # via 127.0.0.1 to disable public access
-  # config.vm.network "forwarded_port", guest: 80, host: 8080, host_ip: "127.0.0.1"
+  config.vm.define "master" do |master|
+    master.vm.hostname = "master-node"
+    master.vm.network :private_network, ip: MASTER_IP
+    master.vm.provision "shell", path: "master.sh",
+      env: { "MASTER_IP" => MASTER_IP, "TOKEN" => TOKEN }
+  end
 
-  # Create a private network, which allows host-only access to the machine
-  # using a specific IP.
-  # config.vm.network "private_network", ip: "192.168.33.10"
+  config.vm.define "worker1" do |master|
+    master.vm.hostname = "worker-node1"
+    master.vm.network :private_network, ip: "10.0.0.201"
+    master.vm.provision "shell", path: "worker.sh",
+      env: { "MASTER_IP" => MASTER_IP, "TOKEN" => TOKEN }
+  end
 
-  # Create a public network, which generally matched to bridged network.
-  # Bridged networks make the machine appear as another physical device on
-  # your network.
-  # config.vm.network "public_network"
-
-  # Share an additional folder to the guest VM. The first argument is
-  # the path on the host to the actual folder. The second argument is
-  # the path on the guest to mount the folder. And the optional third
-  # argument is a set of non-required options.
-  # config.vm.synced_folder "../data", "/vagrant_data"
-
-  # Provider-specific configuration so you can fine-tune various
-  # backing providers for Vagrant. These expose provider-specific options.
-  # Example for VirtualBox:
-  #
-  # config.vm.provider "virtualbox" do |vb|
-  #   # Display the VirtualBox GUI when booting the machine
-  #   vb.gui = true
-  #
-  #   # Customize the amount of memory on the VM:
-  #   vb.memory = "1024"
-  # end
-  #
-  # View the documentation for the provider you are using for more
-  # information on available options.
-
-  # Enable provisioning with a shell script. Additional provisioners such as
-  # Ansible, Chef, Docker, Puppet and Salt are also available. Please see the
-  # documentation for more information about their specific syntax and use.
-  # config.vm.provision "shell", inline: <<-SHELL
-  #   apt-get update
-  #   apt-get install -y apache2
-  # SHELL
+  config.vm.define "worker2" do |master|
+    master.vm.hostname = "worker-node2"
+    master.vm.network :private_network, ip: "10.0.0.202"
+    master.vm.provision "shell", path: "worker.sh",
+      env: { "MASTER_IP" => MASTER_IP, "TOKEN" => TOKEN }
+  end
 end
