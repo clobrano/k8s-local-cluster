@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # -*- coding: UTF-8 -*-
+set -eu
 
 FLANNEL_CIDR="10.244.0.0/16"
 

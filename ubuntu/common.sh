@@ -8,7 +8,7 @@ CNI_VERSION="v0.8.2"
 CRICTL_VERSION="v1.22.0"
 K8S_VERSION="v0.4.0"
 
-set -e
+set -eu
 echo [+ common] install dependencies
 sudo apt-get update
 sudo apt-get install -y \
