@@ -23,7 +23,7 @@ if command -v dnf 2>/dev/null; then
 fi
 
 ## Centos/RedHat (untested yet)
-if command -v dnf 2>/dev/null; then
+if command -v yum 2>/dev/null; then
     sudo yum install -y yum-utils
     sudo yum-config-manager --add-repo https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo
     sudo yum -y install vagrant

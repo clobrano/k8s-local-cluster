@@ -5,7 +5,7 @@ MASTER_IP = "10.0.0.200"
 
 # https://docs.vagrantup.com.
 Vagrant.configure("2") do |config|
-  config.vm.box = "bento/ubuntu-20.04"
+  config.vm.box = "centos/7"
   config.vm.box_check_update = false
 
   config.vm.provider "virtualbox" do |provider|
@@ -13,7 +13,21 @@ Vagrant.configure("2") do |config|
     provider.cpus = 2
   end
 
-  config.vm.provision "shell", path: "ubuntu/common.sh"
+  config.vm.provider "libvirt" do |provider|
+    provider.cpu_mode = 'host-passthrough'
+    provider.graphics_type = 'none'
+    provider.memory = 2048
+    provider.cpus = 4
+    provider.qemu_use_session = false
+  end
+
+  config.vm.provision "shell", path: "centos-guest-dependencies.sh"
+  config.vm.provision "shell", path: "containerd-install.sh"
+  config.vm.provision "shell", path: "install-runc.sh"
+  config.vm.provision "shell", path: "network-setup.sh"
+  config.vm.provision "shell", path: "containerd-toml.sh"
+  config.vm.provision "shell", path: "k8s-install.sh"
+  config.vm.provision "shell", path: "swap-disable.sh"
 
   config.vm.define "master" do |master|
     master.vm.hostname = "master-node"
