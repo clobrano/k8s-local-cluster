@@ -2,6 +2,7 @@
 # vi: set ft=ruby :
 TOKEN = "92zwly.w6fdrnrg2fut5xko"
 MASTER_IP = "10.0.0.200"
+WORKERS_NO = 2
 
 # https://docs.vagrantup.com.
 Vagrant.configure("2") do |config|
@@ -36,17 +37,12 @@ Vagrant.configure("2") do |config|
       env: { "MASTER_IP" => MASTER_IP, "TOKEN" => TOKEN }
   end
 
-  config.vm.define "worker1" do |master|
-    master.vm.hostname = "worker-node1"
-    master.vm.network :private_network, ip: "10.0.0.201"
-    master.vm.provision "shell", path: "worker.sh",
-      env: { "MASTER_IP" => MASTER_IP, "TOKEN" => TOKEN }
-  end
-
-  config.vm.define "worker2" do |master|
-    master.vm.hostname = "worker-node2"
-    master.vm.network :private_network, ip: "10.0.0.202"
-    master.vm.provision "shell", path: "worker.sh",
-      env: { "MASTER_IP" => MASTER_IP, "TOKEN" => TOKEN }
+  (1..WORKERS_NO).each do |i|
+    config.vm.define "worker#{i}" do |master|
+      master.vm.hostname = "worker-node#{i}"
+      master.vm.network :private_network, ip: "10.0.0.20#{i}"
+      master.vm.provision "shell", path: "worker.sh",
+        env: { "MASTER_IP" => MASTER_IP, "TOKEN" => TOKEN }
+    end
   end
 end
