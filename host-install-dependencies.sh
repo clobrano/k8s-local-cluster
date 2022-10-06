@@ -35,3 +35,4 @@ sudo adduser `id -un` kvm
 newgrp libvirt
 
 vagrant plugin install vagrant-libvirt
+vagrant plugin install vagrant-scp
